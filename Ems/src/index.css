@@ -1,0 +1,13 @@
+@import "tailwindcss" ;
+body{
+  background-color: black;
+  color: white;
+}
+*{
+color: white;
+}
+#taskList::-webkit-scrollbar {
+  display: none;
+}html, body {
+  overflow-x: hidden;
+}
