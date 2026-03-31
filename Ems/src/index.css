@@ -1,10 +1,8 @@
 @import "tailwindcss" ;
-body{
+body {
   background-color: black;
   color: white;
-}
-*{
-color: white;
+  min-height: 100vh;
 }
 #taskList::-webkit-scrollbar {
   display: none;

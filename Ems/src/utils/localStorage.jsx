@@ -5,10 +5,10 @@ const employees = [
     email: "employee1@example.com",
     password: "123",
     taskCount: {
-      active: 1,
-      newTask: 1,
+      active: 2,
+      newTask: 2,
       completed: 1,
-      failed: 1
+      failed: 0
     },
     tasks: [
       {
@@ -22,24 +22,24 @@ const employees = [
         category: "Reports"
       },
       {
+        active: true,
+        newTask: true,
+        completed: false,
+        failed: false,
+        taskTitle: "Email client",
+        taskDescription: "Send updated proposal",
+        taskDate: "2026-03-22",
+        category: "Communication"
+      },
+      {
         active: false,
         newTask: false,
         completed: true,
         failed: false,
         taskTitle: "Client meeting",
-        taskDescription: "Discuss requirements with client",
+        taskDescription: "Discuss requirements",
         taskDate: "2026-03-18",
         category: "Meeting"
-      },
-      {
-        active: false,
-        newTask: false,
-        completed: false,
-        failed: true,
-        taskTitle: "Fix bug",
-        taskDescription: "Resolve login issue",
-        taskDate: "2026-03-19",
-        category: "Development"
       }
     ]
   },
@@ -51,7 +51,7 @@ const employees = [
     taskCount: {
       active: 1,
       newTask: 1,
-      completed: 1,
+      completed: 2,
       failed: 1
     },
     tasks: [
@@ -61,7 +61,7 @@ const employees = [
         completed: false,
         failed: false,
         taskTitle: "Design UI",
-        taskDescription: "Create dashboard UI",
+        taskDescription: "Dashboard UI",
         taskDate: "2026-03-21",
         category: "Design"
       },
@@ -71,8 +71,18 @@ const employees = [
         completed: true,
         failed: false,
         taskTitle: "Logo update",
-        taskDescription: "Update company logo",
+        taskDescription: "Update logo",
         taskDate: "2026-03-17",
+        category: "Design"
+      },
+      {
+        active: false,
+        newTask: false,
+        completed: true,
+        failed: false,
+        taskTitle: "Banner design",
+        taskDescription: "Create homepage banner",
+        taskDate: "2026-03-19",
         category: "Design"
       },
       {
@@ -81,7 +91,7 @@ const employees = [
         completed: false,
         failed: true,
         taskTitle: "Animation",
-        taskDescription: "Add animations to landing page",
+        taskDescription: "Landing page animation",
         taskDate: "2026-03-19",
         category: "Frontend"
       }
@@ -96,7 +106,7 @@ const employees = [
       active: 1,
       newTask: 1,
       completed: 1,
-      failed: 1
+      failed: 2
     },
     tasks: [
       {
@@ -105,7 +115,7 @@ const employees = [
         completed: false,
         failed: false,
         taskTitle: "Database setup",
-        taskDescription: "Setup MongoDB schema",
+        taskDescription: "MongoDB schema",
         taskDate: "2026-03-21",
         category: "Backend"
       },
@@ -115,7 +125,7 @@ const employees = [
         completed: true,
         failed: false,
         taskTitle: "API integration",
-        taskDescription: "Integrate payment API",
+        taskDescription: "Payment API",
         taskDate: "2026-03-18",
         category: "Backend"
       },
@@ -125,8 +135,18 @@ const employees = [
         completed: false,
         failed: true,
         taskTitle: "Optimize queries",
-        taskDescription: "Improve DB performance",
+        taskDescription: "Improve performance",
         taskDate: "2026-03-19",
+        category: "Database"
+      },
+      {
+        active: false,
+        newTask: false,
+        completed: false,
+        failed: true,
+        taskTitle: "Fix indexing",
+        taskDescription: "Index optimization",
+        taskDate: "2026-03-20",
         category: "Database"
       }
     ]
@@ -137,7 +157,7 @@ const employees = [
     email: "employee4@example.com",
     password: "123",
     taskCount: {
-      active: 1,
+      active: 2,
       newTask: 1,
       completed: 1,
       failed: 1
@@ -149,9 +169,19 @@ const employees = [
         completed: false,
         failed: false,
         taskTitle: "Write tests",
-        taskDescription: "Unit testing for APIs",
+        taskDescription: "Unit testing",
         taskDate: "2026-03-21",
         category: "Testing"
+      },
+      {
+        active: true,
+        newTask: false,
+        completed: false,
+        failed: false,
+        taskTitle: "Regression testing",
+        taskDescription: "Run regression suite",
+        taskDate: "2026-03-22",
+        category: "QA"
       },
       {
         active: false,
@@ -159,7 +189,7 @@ const employees = [
         completed: true,
         failed: false,
         taskTitle: "Bug verification",
-        taskDescription: "Verify resolved bugs",
+        taskDescription: "Verify bugs",
         taskDate: "2026-03-18",
         category: "QA"
       },
@@ -169,7 +199,7 @@ const employees = [
         completed: false,
         failed: true,
         taskTitle: "Automation",
-        taskDescription: "Setup automation scripts",
+        taskDescription: "Automation scripts",
         taskDate: "2026-03-19",
         category: "QA"
       }
@@ -183,8 +213,8 @@ const employees = [
     taskCount: {
       active: 1,
       newTask: 1,
-      completed: 1,
-      failed: 1
+      completed: 2,
+      failed: 0
     },
     tasks: [
       {
@@ -193,7 +223,7 @@ const employees = [
         completed: false,
         failed: false,
         taskTitle: "Deploy app",
-        taskDescription: "Deploy on production server",
+        taskDescription: "Production deploy",
         taskDate: "2026-03-21",
         category: "DevOps"
       },
@@ -203,23 +233,24 @@ const employees = [
         completed: true,
         failed: false,
         taskTitle: "CI/CD setup",
-        taskDescription: "Setup pipeline",
+        taskDescription: "Pipeline setup",
         taskDate: "2026-03-17",
         category: "DevOps"
       },
       {
         active: false,
         newTask: false,
-        completed: false,
-        failed: true,
-        taskTitle: "Monitor logs",
-        taskDescription: "Fix server errors",
-        taskDate: "2026-03-19",
-        category: "Monitoring"
+        completed: true,
+        failed: false,
+        taskTitle: "Server config",
+        taskDescription: "NGINX setup",
+        taskDate: "2026-03-18",
+        category: "DevOps"
       }
     ]
   }
 ];
+
 
 const admin = [
   {
