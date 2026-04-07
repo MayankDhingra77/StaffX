@@ -10,31 +10,29 @@ export default function App() {
   const [loggedInUserData , setloggedInUserData] = useState(null) ;
   const authData = useContext(AuthContext) 
 
-  // useEffect(()=>{
-  //   if(authData){
-  //     const loggedInUser = localStorage.getItem("LoggedInUser")
-  //     if(loggedInUser){
-  //       setUser(loggedInUser.role)
-  //     }
+  useEffect(()=>{
+    const loggedInUser = localStorage.getItem('loggedInUser')
+    if(loggedInUser) {
+      const userData = JSON.parse(loggedInUser)
+      setUser(userData.role)
+      setloggedInUserData(userData.data)
+    }
 
-  //   }
-  // },[authData]) ;
-
-
+  },[])
   const handleLogin = (email , password) =>{
     if(email == 'admin@me.com' && password == '123'){
       setUser('admin')
-      localStorage.setItem('LoggedInUser' , JSON.stringify({role : 'admin'}))
+      localStorage.setItem('loggedInUser' , JSON.stringify({role : 'admin'}))
     }else if(authData){
       const employee = authData.employees.find((e)=> email == e.email && e.password == password) ;
       if(employee){
         setUser('employee')
         setloggedInUserData(employee)
-        localStorage.setItem('LoggedInUser' , JSON.stringify({role : 'employee'}))
+        localStorage.setItem('loggedInUser' , JSON.stringify({role : 'employee', data :employee}))
       }
-    }
-    else{
-      alert("Invalid Credentials") 
+      else{
+        alert("Invalid Credentials") 
+      }
     }
   }
 
@@ -43,8 +41,8 @@ export default function App() {
       {/* <> this is called fragemnets */}
       {!authData ? <div>Loading...</div> : ''}
       {!user ? <Login handleLogin={handleLogin}/> : ''}
-      {user == 'admin' && <AdminDashboard/> }
-      {user == 'employee' && <EmployeeDashboard data= {loggedInUserData} />}
+      {user == 'admin' && <AdminDashboard changeUser = {setUser}/> }
+      {user == 'employee' && <EmployeeDashboard data= {loggedInUserData} changeUser = {setUser} />}
       
     </>
   )
