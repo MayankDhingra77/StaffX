@@ -1,22 +1,45 @@
-import { useState } from "react";
-
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthProvider";
 export default function CreateTask() {
+    const { userData, setUserData } = useContext(AuthContext) || {};
+
     const [taskTitle , setTaskTitle] = useState('') ;
     const [taskDate , setTaskDate] = useState('') ;
     const [taskDescription , setTaskDescription] = useState('') ;
     const [assignTo , setAssignTo] = useState('') ;
     const [category , setCategory] = useState('') ;
-    const [newTask , setNewTask] = useState({}) ;
     const submitHandler = (e) =>{ 
             e.preventDefault() ;
-            setNewTask({taskTitle , taskDate , taskDescription , assignTo , category , Active:false , newTask:true , failed : false , completed:false})
-            const data = JSON.parse(localStorage.getItem('employees'))
-            data.forEach((elem) => {
-                if(assignTo == elem.firstName) {
-                    elem.tasks.push(newTask)
+            if (!userData?.employees || !setUserData) return;
+
+            const task = {
+                taskTitle,
+                taskDate,
+                taskDescription,
+                assignTo,
+                category,
+                active: false,
+                newTask: true,
+                failed: false,
+                completed: false,
+            };
+
+            const updatedEmployees = userData.employees.map((elem) => {
+                if (assignTo === elem.firstName) {
+                    return {
+                        ...elem,
+                        tasks: [...elem.tasks, task],
+                        taskCount: {
+                            ...elem.taskCount,
+                            active: elem.taskCount.active + 1,
+                            newTask: elem.taskCount.newTask + 1,
+                        },
+                    };
                 }
-            })
-            localStorage.setItem('employees',JSON>stringify(data)) ;
+                return elem;
+            });
+
+            setUserData({ ...userData, employees: updatedEmployees });
             setTaskTitle('') ;
             setTaskDate('') ;
             setTaskDescription('') ;

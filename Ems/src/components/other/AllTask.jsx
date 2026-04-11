@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 export default function AllTask() {
-    const authData = useContext(AuthContext);
+    const { userData } = useContext(AuthContext) || {};
     return (
         <>
             <div className="bg-[#1c1c1c] p-5 rounded mt-5 h-68 ">
@@ -17,7 +17,7 @@ export default function AllTask() {
                 </div>
 
                 <div className="overflow-auto h-[80%] ">
-                    {authData.employees.map(function (elem, idx) {
+                    {userData?.employees?.map(function (elem, idx) {
                         return <div key={idx} className={`${idx % 2 === 0 ? "bg-emerald-800" : "bg-emerald-600"} mb-2 py-2 px-4 flex justify-between rounded`}>
                                 <h2 className={`w-1/5 ${idx % 2 == 0 ? "bg-emerald-600" : "bg-emerald-800"} pl-1`}>{elem.firstName}</h2>
                                 <h3 className={`w-1/5 ${idx % 2 == 0 ? "bg-emerald-600" : "bg-emerald-800"}`}>{elem.taskCount.active}</h3>

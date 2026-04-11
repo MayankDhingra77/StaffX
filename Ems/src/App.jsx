@@ -2,13 +2,12 @@ import Login from './components/Auth/Login'
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard'
 import AdminDashboard from './components/Dashboard/AdminDashboard'
 import { useEffect, useState } from 'react'
-import { getLocalStorage, setLocalStorage } from './utils/localStorage'
 import { AuthContext } from './context/AuthProvider'
 import { useContext } from 'react'
 export default function App() {
   const [user, setUser] = useState(null) ;
   const [loggedInUserData , setloggedInUserData] = useState(null) ;
-  const authData = useContext(AuthContext) 
+  const { userData: authData } = useContext(AuthContext) || {}
 
   useEffect(()=>{
     const loggedInUser = localStorage.getItem('loggedInUser')
