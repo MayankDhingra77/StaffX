@@ -1,86 +1,134 @@
-# StaffX
-Description:
+# StaffX — HR Management System
 
-StaffX is a modern Employee Management System designed to streamline workplace operations by enabling both employers and employees to efficiently manage tasks, track progress, and organize workforce activities in a centralized platform.
+A clean, full-featured HR management web app built with React, Vite, and Tailwind CSS. Supports two roles — **Admin** and **Employee** — each with their own dashboard and capabilities.
 
-The system provides a dual-role interface where:
+---
 
-Employers (Admins) can assign tasks, monitor employee performance, manage team members, and oversee task completion status.
-Employees can view assigned tasks, update their progress, mark tasks as completed or failed, and stay organized with their daily responsibilities.
+## Screenshots
 
-Key Features:
+> Admin Dashboard · Employee Portal · Dark Mode supported throughout
 
-🔹 Task assignment and tracking system
-🔹 Real-time task status updates (active, completed, failed)
-🔹 Employee management dashboard
-🔹 Role-based access (Admin & Employee)
-🔹 Clean and user-friendly interface
-🔹 Efficient data handling using local storage / backend
+---
 
-Objective:
-The main goal of StaffX is to improve productivity and transparency in organizations by providing a simple yet powerful tool for managing employees and their tasks in one place.
+## Features
 
-🔥 Short Version (for GitHub)
+**Admin Panel**
+- Dashboard with live stats — headcount, attendance, pending tasks, departments
+- Employee directory — add, edit, delete, search, filter by department/status
+- Task management — assign tasks, set priorities, track status
+- Leave management — review and approve/reject leave requests
+- Attendance tracking — mark daily attendance for all employees
+- Activity log — timestamped record of all actions taken
 
-StaffX is an Employee Management System that allows employers to assign and track tasks while enabling employees to manage and update their work efficiently through a user-friendly interface.
+**Employee Panel**
+- Personal profile portal — view your own details and salary info
+- My Tasks — see assigned tasks and update their status
+- My Leaves — apply for leave and track approval status
+- Performance — view your ratings and feedback from admin
 
-If you want next level 🚀:
+**General**
+- Dark / Light mode toggle
+- React Icons throughout (no emojis)
+- Toast notifications for all actions
+- Responsive layout
 
-I can make resume bullet points (impact-based)
-OR a perfect GitHub README (with badges + sections)
-for github
+---
 
-Here’s a clean GitHub README description for your project StaffX 👇
+## Tech Stack
 
-🚀 StaffX – Employee Management System
+| Layer | Technology |
+|---|---|
+| Framework | React 18 |
+| Build Tool | Vite |
+| Styling | Tailwind CSS |
+| Icons | React Icons (Material Design) |
+| State | React Context API + useReducer |
+| Storage | localStorage |
 
-StaffX is a modern Employee Management System that helps organizations efficiently manage employees and tasks through a centralized platform. It provides separate dashboards for employers and employees to ensure smooth workflow and better productivity.
+---
 
-📌 Features
-👨‍💼 Admin Dashboard
-Add and manage employees
-Assign tasks to employees
-Track task progress and performance
-👨‍💻 Employee Dashboard
-View assigned tasks
-Update task status (active, completed, failed)
-Manage daily work efficiently
-🔄 Task Management System
-Real-time task tracking
-Task categorization (new, active, completed, failed)
-🔐 Role-Based Access
-Separate access for Admin and Employees
-🎨 User-Friendly UI
-Clean and responsive design
-🛠️ Tech Stack
-Frontend: React.js
-Styling: Tailwind CSS
-State Management: Context API
-Storage: Local Storage / Backend (if added)
-📂 Project Structure
-StaffX/
-│── src/
-│   ├── components/
-│   ├── Dashboard/
-│   ├── Auth/
-│   ├── context/
-│   └── utils/
-│── public/
-│── package.json
-⚙️ Installation & Setup
-# Clone the repository
+## Getting Started
+
+**Prerequisites:** Node.js 16+
+
+```bash
+# 1. Clone the repo
 git clone https://github.com/your-username/staffx.git
-
-# Navigate to project
 cd staffx
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Run the project
+# 3. Start the dev server
 npm run dev
-🎯 Future Improvements
-🔹 Backend integration (Node.js + Database)
-🔹 Authentication with JWT
-🔹 Real-time notifications
-🔹 Performance analytics dashboard
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+```bash
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+---
+
+## Demo Credentials
+
+**Admin**
+```
+Email:    admin@staffx.io
+Password: admin123
+```
+
+**Employee** — any of the following:
+
+| Name | Email | Password |
+|---|---|---|
+| Aman Gupta | aman@staffx.io | 123 |
+| Rohit Sharma | rohit@staffx.io | 123 |
+| Rahul Singh | rahul@staffx.io | 123 |
+| Abhishek Kumar | abhishek@staffx.io | 123 |
+| Karan Malhotra | karan@staffx.io | 123 |
+| Gagan Thakral | gagan@staffx.io | 123 |
+| Vansh Arora | vansh@staffx.io | 123 |
+| Gautam Sachdeva | gautam@staffx.io | 123 |
+| Nitesh Srivastava | nitesh@staffx.io | 123 |
+| Arpit Joshi | arpit@staffx.io | 123 |
+
+---
+
+## Project Structure
+
+```
+staffx/
+├── src/
+│   ├── components/
+│   │   ├── UI.jsx            # Shared UI primitives (Button, Modal, Toast, etc.)
+│   │   ├── LoginPage.jsx     # Login screen with role switcher
+│   │   └── Sidebar.jsx       # Navigation sidebar
+│   ├── contexts/
+│   │   ├── AuthContext.jsx   # Login / logout state
+│   │   ├── DataContext.jsx   # Global data store with useReducer
+│   │   └── ThemeContext.jsx  # Dark / light mode
+│   ├── pages/
+│   │   ├── admin/            # Dashboard, Employees, Tasks, Leaves, Attendance, Logs
+│   │   └── employee/         # Portal, MyTasks, MyLeaves, Performance
+│   ├── utils/
+│   │   └── data.js           # Seed data, helpers, formatCurrency
+│   ├── App.jsx
+│   ├── index.jsx
+│   └── index.css
+├── index.html
+├── vite.config.js
+├── tailwind.config.js
+└── package.json
+```
+
+---
+
+## License
+
+MIT

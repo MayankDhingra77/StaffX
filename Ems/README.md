@@ -1,16 +1,86 @@
-# React + Vite
+# StaffX - HR Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern HR management application built with React, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```
+staffx-app/
+├── src/
+│   ├── components/          # UI components
+│   │   ├── UI.jsx          # Reusable UI elements
+│   │   ├── LoginPage.jsx   # Login page
+│   │   └── Sidebar.jsx     # Navigation sidebar
+│   ├── contexts/           # React contexts
+│   │   ├── AuthContext.jsx      # Authentication
+│   │   └── DataContext.jsx      # Data management
+│   ├── pages/              # Page components
+│   │   ├── admin/          # Admin pages
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Employees.jsx
+│   │   │   ├── Tasks.jsx
+│   │   │   ├── Leaves.jsx
+│   │   │   └── ActivityLogs.jsx
+│   │   └── employee/       # Employee pages
+│   │       ├── Portal.jsx
+│   │       ├── MyTasks.jsx
+│   │       └── MyLeaves.jsx
+│   ├── utils/              # Utility functions
+│   │   └── data.js         # Sample data and helpers
+│   ├── App.jsx             # Main app component
+│   ├── index.jsx           # Entry point
+│   └── index.css           # Global styles
+├── index.html              # HTML template
+├── vite.config.js          # Vite config
+├── tailwind.config.js      # Tailwind config
+├── postcss.config.js       # PostCSS config
+└── package.json            # Dependencies
 
-## React Compiler
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Installation
 
-## Expanding the ESLint configuration
+1. Install dependencies:
+```bash
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2. Start development server:
+```bash
+npm run dev
+```
+
+3. Open browser at `http://localhost:5173`
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+## Demo Credentials
+
+**Admin:**
+- Email: admin@staffx.io
+- Password: admin123
+
+**Employee:**
+- Email: arjun@staffx.io
+- Password: 123
+
+## Features
+
+- Employee management
+- Task assignment and tracking
+- Leave request management
+- Activity logging
+- Dark mode UI
+- Responsive design
+- Local storage persistence
+
+## Technologies Used
+
+- React 18
+- Vite
+- Tailwind CSS
+- React Context API

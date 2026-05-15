@@ -1,11 +1,7 @@
-@import "tailwindcss" ;
-body {
-  background-color: black;
-  color: white;
-  min-height: 100vh;
-}
-#taskList::-webkit-scrollbar {
-  display: none;
-}html, body {
-  overflow-x: hidden;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark light;
 }
