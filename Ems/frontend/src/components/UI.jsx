@@ -12,6 +12,7 @@ export const C = {
   muted:    "text-gray-400 dark:text-gray-600",
   divider:  "border-gray-100 dark:border-[#1a1f2c]",
   rowHover: "hover:bg-gray-50/80 dark:hover:bg-[#13161e] transition-colors",
+  iconBtn:  "w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#1a1f2c] text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 transition-colors",
 };
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
@@ -106,13 +107,20 @@ export function Select({ label, value, onChange, options }) {
 }
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
+// On mobile: slides up from bottom as a sheet; on larger screens: centered dialog
 export function Modal({ open, onClose, title, children, maxWidth = "max-w-lg" }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
       style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
-      <div className={`${C.card} shadow-2xl w-full ${maxWidth} max-h-[90vh] overflow-y-auto animate-fade-in-up`}>
-        <div className={`flex items-center justify-between px-5 py-4 border-b ${C.divider}`}>
+      {/* Click-outside to close */}
+      <div className="absolute inset-0" onClick={onClose} />
+      <div className={`
+        relative ${C.card} shadow-2xl w-full ${maxWidth}
+        max-h-[92vh] sm:max-h-[90vh] overflow-y-auto animate-fade-in-up
+        rounded-b-none sm:rounded-xl
+      `}>
+        <div className={`flex items-center justify-between px-5 py-4 border-b ${C.divider} sticky top-0 bg-white dark:bg-[#111318] z-10`}>
           <h3 className="font-semibold text-sm">{title}</h3>
           <button onClick={onClose}
             className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#1e2432] text-gray-400 transition-colors">
@@ -128,7 +136,8 @@ export function Modal({ open, onClose, title, children, maxWidth = "max-w-lg" })
 // ─── Toast ────────────────────────────────────────────────────────────────────
 export function Toast({ toasts, removeToast }) {
   return (
-    <div className="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none">
+    // On mobile: toasts appear at top center; on desktop: bottom right
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:top-auto sm:bottom-5 sm:right-5 z-[100] flex flex-col gap-2 pointer-events-none w-[calc(100vw-2rem)] sm:w-auto max-w-sm sm:max-w-none">
       {toasts.map(t => (
         <div key={t.id}
           className={`pointer-events-auto flex items-center gap-2.5 pl-3.5 pr-2 py-2.5 rounded-xl shadow-2xl text-sm font-medium border backdrop-blur-sm animate-fade-in-up
@@ -142,7 +151,7 @@ export function Toast({ toasts, removeToast }) {
             : t.type === "error"
             ? <MdError size={16} className="text-red-500 shrink-0" />
             : <MdInfo size={16} className="text-blue-500 shrink-0" />}
-          <span>{t.message}</span>
+          <span className="flex-1">{t.message}</span>
           <button onClick={() => removeToast(t.id)}
             className="ml-1 w-6 h-6 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#1e2432] text-gray-400 transition-colors">
             <MdClose size={13} />
@@ -168,9 +177,9 @@ export function StatCard({ label, value, color = "text-emerald-500", sub, icon }
   return (
     <div className={`${C.card} p-4 flex flex-col gap-3`}>
       <div className="flex items-center justify-between">
-        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</p>
+        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide leading-tight">{label}</p>
         {icon && (
-          <div className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-[#1a1f2c] flex items-center justify-center text-gray-400 dark:text-gray-500">
+          <div className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-[#1a1f2c] flex items-center justify-center text-gray-400 dark:text-gray-500 shrink-0">
             {icon}
           </div>
         )}
@@ -210,15 +219,16 @@ export function EmptyState({ icon, title, description }) {
   );
 }
 
-// ─── Section Header ───────────────────────────────────────────────────────────
+// ─── PageHeader ───────────────────────────────────────────────────────────────
+// Stacks title/action vertically on small screens
 export function PageHeader({ title, subtitle, action }) {
   return (
-    <div className="flex items-start justify-between gap-4 pb-1">
+    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-1">
       <div>
         <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
         {subtitle && <p className={`text-sm mt-0.5 ${C.subtext}`}>{subtitle}</p>}
       </div>
-      {action}
+      {action && <div className="flex flex-wrap gap-2">{action}</div>}
     </div>
   );
 }

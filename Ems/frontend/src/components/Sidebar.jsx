@@ -4,7 +4,7 @@ import { Avatar, Btn } from './UI';
 import {
   MdDashboard, MdPeople, MdAssignment, MdEventNote,
   MdCalendarToday, MdHistory, MdPerson, MdStar,
-  MdWbSunny, MdNightlight, MdLogout,
+  MdWbSunny, MdNightlight, MdLogout, MdClose,
 } from 'react-icons/md';
 
 const NAV_ADMIN = [
@@ -57,12 +57,12 @@ export function Sidebar({ page, setPage, role }) {
           const isActive = page === key;
           return (
             <button key={key} onClick={() => setPage(key)}
-              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-all text-left group
+              className={`w-full flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg text-[13px] font-medium transition-all text-left group
                 ${isActive
                   ? "bg-emerald-600 text-white shadow-sm shadow-emerald-900/30"
                   : "text-gray-500 dark:text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#161a22]"
                 }`}>
-              <Icon size={15} className={`shrink-0 transition-colors ${isActive ? "text-white/90" : "text-gray-400 dark:text-gray-600 group-hover:text-gray-600 dark:group-hover:text-gray-400"}`} />
+              <Icon size={16} className={`shrink-0 transition-colors ${isActive ? "text-white/90" : "text-gray-400 dark:text-gray-600 group-hover:text-gray-600 dark:group-hover:text-gray-400"}`} />
               {label}
             </button>
           );
