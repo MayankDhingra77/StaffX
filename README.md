@@ -29,11 +29,11 @@ Backend API: https://staffx-backend.onrender.com
 
 ## Admin Dashboard
 
-![Admin Dashboard](screenshots/adminDashboard.png)
+![Admin Dashboard](EMS/screenshots/adminDashboard.png)
 
 ## Employee Portal
 
-![Employee Portal](screenshots/employeeDashboard.png)
+![Employee Portal](EMS/screenshots/employeeDashboard.png)
 
 # ✨ Features
 
