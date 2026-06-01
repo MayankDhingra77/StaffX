@@ -1,134 +1,177 @@
-# StaffX — HR Management System
+# 🚀 StaffX - Employee Management System
 
-A clean, full-featured HR management web app built with React, Vite, and Tailwind CSS. Supports two roles — **Admin** and **Employee** — each with their own dashboard and capabilities.
+A full-stack Employee Management System built using React, Node.js, Express, and MongoDB Atlas.
 
----
+StaffX helps organizations manage employees, attendance, leave requests, tasks, and workforce operations through a centralized dashboard.
 
-## Screenshots
+## ✨ Features
 
-> Admin Dashboard · Employee Portal · Dark Mode supported throughout
+* Employee Management
+* Attendance Tracking
+* Leave Management
+* Task Assignment & Tracking
+* JWT Authentication
+* Role-Based Access Control
+* MongoDB Atlas Integration
+* Responsive UI with Tailwind CSS
 
----
+## 🛠 Tech Stack
 
-## Features
+### Frontend
 
-**Admin Panel**
-- Dashboard with live stats — headcount, attendance, pending tasks, departments
-- Employee directory — add, edit, delete, search, filter by department/status
-- Task management — assign tasks, set priorities, track status
-- Leave management — review and approve/reject leave requests
-- Attendance tracking — mark daily attendance for all employees
-- Activity log — timestamped record of all actions taken
+* React
+* Vite
+* Tailwind CSS
+* Axios
+* React Router
 
-**Employee Panel**
-- Personal profile portal — view your own details and salary info
-- My Tasks — see assigned tasks and update their status
-- My Leaves — apply for leave and track approval status
-- Performance — view your ratings and feedback from admin
+### Backend
 
-**General**
-- Dark / Light mode toggle
-- React Icons throughout (no emojis)
-- Toast notifications for all actions
-- Responsive layout
+* Node.js
+* Express.js
+* MongoDB Atlas
+* Mongoose
+* JWT
+* bcrypt
 
----
+## 📁 Project Structure
 
-## Tech Stack
+```text
+StaffX/
+│
+├── backend/
+│   ├── src/
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+│
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── index.html
+│   └── .env
+│
+└── README.md
+```
 
-| Layer | Technology |
-|---|---|
-| Framework | React 18 |
-| Build Tool | Vite |
-| Styling | Tailwind CSS |
-| Icons | React Icons (Material Design) |
-| State | React Context API + useReducer |
-| Storage | localStorage |
+## ⚙️ Installation
 
----
-
-## Getting Started
-
-**Prerequisites:** Node.js 16+
+### Clone Repository
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/your-username/staffx.git
-cd staffx
+git clone https://github.com/MayankDhingra77/StaffX
+cd StaffX
+```
 
-# 2. Install dependencies
+### Backend Setup
+
+```bash
+cd backend
 npm install
+```
 
-# 3. Start the dev server
+Create `.env`
+
+```env
+PORT=5000
+NODE_ENV=development
+
+MONGO_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=7d
+
+ADMIN_EMAIL=admin@staffx.io
+ADMIN_PASSWORD=admin123
+ADMIN_NAME=Admin
+
+CORS_ORIGIN=http://localhost:5173
+```
+
+Start backend:
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Backend will run on:
+
+```text
+http://localhost:5000
+```
+
+### Frontend Setup
 
 ```bash
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+cd ../frontend
+npm install
 ```
 
----
+Create `.env`
 
-## Demo Credentials
-
-**Admin**
+```env
+VITE_API_URL=http://localhost:5000/api
 ```
-Email:    admin@staffx.io
+
+Start frontend:
+
+```bash
+npm run dev
+```
+
+Frontend will run on:
+
+```text
+http://localhost:5173
+```
+
+## 🔐 Default Admin Login
+
+```text
+Email: admin@staffx.io
 Password: admin123
 ```
 
-**Employee** — any of the following:
+## 🌐 Deployment
 
-| Name | Email | Password |
-|---|---|---|
-| Aman Gupta | aman@staffx.io | 123 |
-| Rohit Sharma | rohit@staffx.io | 123 |
-| Rahul Singh | rahul@staffx.io | 123 |
-| Abhishek Kumar | abhishek@staffx.io | 123 |
-| Karan Malhotra | karan@staffx.io | 123 |
-| Gagan Thakral | gagan@staffx.io | 123 |
-| Vansh Arora | vansh@staffx.io | 123 |
-| Gautam Sachdeva | gautam@staffx.io | 123 |
-| Nitesh Srivastava | nitesh@staffx.io | 123 |
-| Arpit Joshi | arpit@staffx.io | 123 |
+### Frontend
 
----
+* Vercel
 
-## Project Structure
+### Backend
 
-```
-staffx/
-├── src/
-│   ├── components/
-│   │   ├── UI.jsx            # Shared UI primitives (Button, Modal, Toast, etc.)
-│   │   ├── LoginPage.jsx     # Login screen with role switcher
-│   │   └── Sidebar.jsx       # Navigation sidebar
-│   ├── contexts/
-│   │   ├── AuthContext.jsx   # Login / logout state
-│   │   ├── DataContext.jsx   # Global data store with useReducer
-│   │   └── ThemeContext.jsx  # Dark / light mode
-│   ├── pages/
-│   │   ├── admin/            # Dashboard, Employees, Tasks, Leaves, Attendance, Logs
-│   │   └── employee/         # Portal, MyTasks, MyLeaves, Performance
-│   ├── utils/
-│   │   └── data.js           # Seed data, helpers, formatCurrency
-│   ├── App.jsx
-│   ├── index.jsx
-│   └── index.css
-├── index.html
-├── vite.config.js
-├── tailwind.config.js
-└── package.json
+* Render
+
+### Database
+
+* MongoDB Atlas
+
+Environment variable on Vercel:
+
+```env
+VITE_API_URL=https://your-render-backend-url.onrender.com/api
 ```
 
----
+Environment variable on Render:
 
-## License
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+CORS_ORIGIN=https://your-vercel-app.vercel.app
+```
 
-MIT
+## 📌 Future Enhancements
+
+* Payroll Management
+* Performance Analytics
+* Email Notifications
+* Real-Time Updates
+* Document Management
+
+## 👨‍💻 Author
+
+Mayank
+
+If you found this project useful, consider giving it a ⭐ on GitHub.
