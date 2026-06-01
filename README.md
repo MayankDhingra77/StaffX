@@ -1,177 +1,243 @@
-# 🚀 StaffX - Employee Management System
+<div align="center">
 
-A full-stack Employee Management System built using React, Node.js, Express, and MongoDB Atlas.
+# 🚀 StaffX - Human Resource Management System
 
-StaffX helps organizations manage employees, attendance, leave requests, tasks, and workforce operations through a centralized dashboard.
+A modern full-stack HRMS built with React, Node.js, Express, and MongoDB Atlas.
 
-## ✨ Features
+Manage employees, attendance, tasks, leave requests, performance ratings, and activity logs through dedicated Admin and Employee portals.
 
-* Employee Management
-* Attendance Tracking
-* Leave Management
-* Task Assignment & Tracking
-* JWT Authentication
-* Role-Based Access Control
-* MongoDB Atlas Integration
-* Responsive UI with Tailwind CSS
+### 🌐 Live Demo
 
-## 🛠 Tech Stack
+Frontend: https://staffxfrontend.vercel.app
 
-### Frontend
+Backend API: https://staffx-backend.onrender.com
 
-* React
-* Vite
-* Tailwind CSS
-* Axios
-* React Router
+---
 
-### Backend
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-Backend-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-Frontend-black?style=for-the-badge&logo=vercel)
+![Render](https://img.shields.io/badge/Render-Backend-46E3B7?style=for-the-badge&logo=render)
 
-* Node.js
-* Express.js
-* MongoDB Atlas
-* Mongoose
-* JWT
-* bcrypt
+</div>
 
-## 📁 Project Structure
+---
+
+# 📸 Screenshots
+
+## Admin Dashboard
+
+![Admin Dashboard](screenshots/adminDashboard.png)
+
+## Employee Portal
+
+![Employee Portal](screenshots/employeeDashboard.png)
+
+# ✨ Features
+
+## 👨‍💼 Admin Portal
+
+- Dashboard with real-time statistics
+- Employee management system
+- Attendance management
+- Leave management
+- Task assignment and tracking
+- Employee performance ratings
+- Activity monitoring and logs
+- Department overview and analytics
+
+## 👨‍💻 Employee Portal
+
+- Personal employee dashboard
+- View assigned tasks
+- Apply for leaves
+- Leave history tracking
+- Performance overview
+- Attendance records
+- Task progress updates
+
+## 📊 Dashboard Analytics
+
+- Total Employees
+- Active Employees
+- Employees On Leave
+- Department Statistics
+- Present Today
+- Pending Tasks
+- Task Progress Overview
+- Recent Activity Feed
+- Employee Performance Ratings
+
+## 🔐 Authentication & Security
+
+- JWT Authentication
+- Role Based Access Control (RBAC)
+- Protected Routes
+- Password Hashing using bcrypt
+- Secure REST APIs
+- Environment Variable Configuration
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React 18
+- Vite
+- Tailwind CSS
+- Axios
+- Context API
+- React Icons
+
+## Backend
+
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- JWT Authentication
+- bcryptjs
+- Express Middleware
+
+## Deployment
+
+- Vercel (Frontend)
+- Render (Backend)
+- MongoDB Atlas (Database)
+
+---
+
+# 📁 Project Structure
 
 ```text
 StaffX/
-│
-├── backend/
-│   ├── src/
-│   ├── server.js
-│   ├── package.json
-│   └── .env
-│
-├── frontend/
-│   ├── src/
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── index.html
-│   └── .env
-│
-└── README.md
+└── Ems/
+    ├── backend/
+    │   ├── src/
+    │   ├── server.js
+    │   ├── package.json
+    │   └── .env
+    │
+    ├── frontend/
+    │   ├── src/
+    │   ├── public/
+    │   ├── package.json
+    │   ├── vite.config.js
+    │   └── .env
+    │
+    ├── screenshots/
+    │   ├── admin-dashboard.png
+    │   └── employee-portal.png
+    │
+    └── README.md
 ```
 
-## ⚙️ Installation
+---
 
-### Clone Repository
+# 🚀 Local Setup
+
+## Clone Repository
 
 ```bash
-git clone https://github.com/MayankDhingra77/StaffX
-cd StaffX
+git clone https://github.com/MayankDhingra77/StaffX.git
 ```
 
-### Backend Setup
+## Backend Setup
 
 ```bash
-cd backend
+cd Ems/backend
 npm install
-```
-
-Create `.env`
-
-```env
-PORT=5000
-NODE_ENV=development
-
-MONGO_URI=your_mongodb_connection_string
-
-JWT_SECRET=your_secret_key
-JWT_EXPIRES_IN=7d
-
-ADMIN_EMAIL=admin@staffx.io
-ADMIN_PASSWORD=admin123
-ADMIN_NAME=Admin
-
-CORS_ORIGIN=http://localhost:5173
-```
-
-Start backend:
-
-```bash
 npm run dev
 ```
 
-Backend will run on:
+Backend runs on:
 
 ```text
 http://localhost:5000
 ```
 
-### Frontend Setup
+## Frontend Setup
 
 ```bash
-cd ../frontend
+cd Ems/frontend
 npm install
-```
-
-Create `.env`
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-Start frontend:
-
-```bash
 npm run dev
 ```
 
-Frontend will run on:
+Frontend runs on:
 
 ```text
 http://localhost:5173
 ```
 
-## 🔐 Default Admin Login
+---
 
-```text
-Email: admin@staffx.io
-Password: admin123
-```
+# ⚙️ Environment Variables
 
-## 🌐 Deployment
-
-### Frontend
-
-* Vercel
-
-### Backend
-
-* Render
-
-### Database
-
-* MongoDB Atlas
-
-Environment variable on Vercel:
-
-```env
-VITE_API_URL=https://your-render-backend-url.onrender.com/api
-```
-
-Environment variable on Render:
+## Backend (.env)
 
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
-CORS_ORIGIN=https://your-vercel-app.vercel.app
+JWT_EXPIRES_IN=7d
+CORS_ORIGIN=http://localhost:5173
 ```
 
-## 📌 Future Enhancements
+## Frontend (.env)
 
-* Payroll Management
-* Performance Analytics
-* Email Notifications
-* Real-Time Updates
-* Document Management
+```env
+VITE_API_URL=http://localhost:5000/api
+```
 
-## 👨‍💻 Author
+---
 
-Mayank
+# 🌍 Deployment
 
-If you found this project useful, consider giving it a ⭐ on GitHub.
+## Frontend
+
+Hosted on Vercel
+
+https://staffxfrontend.vercel.app
+
+## Backend
+
+Hosted on Render
+
+https://staffx-backend.onrender.com
+
+## Database
+
+MongoDB Atlas Cloud Database
+
+---
+
+# 🎯 Highlights
+
+- Full Stack MERN Application
+- Production Deployment
+- MongoDB Atlas Integration
+- JWT Authentication
+- Role Based Access Control
+- Responsive Dark Theme UI
+- Attendance Management System
+- Leave Management Workflow
+- Employee Performance Tracking
+- Task Assignment & Monitoring
+- Activity Logging System
+
+---
+
+# 👨‍💻 Author
+
+### Mayank Dhingra
+
+GitHub:
+https://github.com/MayankDhingra77
+
+---
+
+⭐ If you found this project useful, consider giving it a star.
