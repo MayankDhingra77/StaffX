@@ -12,6 +12,8 @@ Frontend: https://staffxfrontend.vercel.app
 
 Backend API: https://staffx-backend.onrender.com
 
+Demo Link : https://staffxfrontend.vercel.app
+
 ---
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)
