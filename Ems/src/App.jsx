@@ -16,32 +16,32 @@ import { PerformancePage } from './pages/employee/Performance';
 
 function Shell() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
-  const [page, setPage] = useState(isAdmin ? "dashboard" : "portal");
+  const isAdmin = user?.role === 'admin' || user?.role === 'hr';
+  const [page, setPage] = useState(isAdmin ? 'dashboard' : 'portal');
   const { toasts, toast, removeToast } = useToast();
 
   function renderPage() {
     if (isAdmin) {
-      if (page === "dashboard")  return <DashboardPage />;
-      if (page === "employees")  return <EmployeesPage toast={toast} />;
-      if (page === "tasks")      return <TasksPage toast={toast} />;
-      if (page === "leaves")     return <LeavesPage toast={toast} />;
-      if (page === "attendance") return <AttendancePage toast={toast} />;
-      if (page === "logs")       return <ActivityLogsPage />;
+      if (page === 'dashboard')  return <DashboardPage />;
+      if (page === 'employees')  return <EmployeesPage toast={toast} />;
+      if (page === 'tasks')      return <TasksPage toast={toast} />;
+      if (page === 'leaves')     return <LeavesPage toast={toast} />;
+      if (page === 'attendance') return <AttendancePage toast={toast} />;
+      if (page === 'logs')       return <ActivityLogsPage />;
     } else {
-      if (page === "portal")      return <EmployeePortalPage />;
-      if (page === "my-tasks")    return <MyTasksPage toast={toast} />;
-      if (page === "my-leaves")   return <MyLeavesPage toast={toast} />;
-      if (page === "performance") return <PerformancePage />;
+      if (page === 'portal')      return <EmployeePortalPage />;
+      if (page === 'my-tasks')    return <MyTasksPage toast={toast} />;
+      if (page === 'my-leaves')   return <MyLeavesPage toast={toast} />;
+      if (page === 'performance') return <PerformancePage />;
     }
     return null;
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-[#161b22] text-gray-900 dark:text-gray-100 overflow-hidden transition-colors">
-      <Sidebar page={page} setPage={setPage} role={isAdmin ? "admin" : "employee"} />
+    <div className="flex h-screen bg-slate-50 dark:bg-[#0a0c10] text-gray-900 dark:text-gray-100 overflow-hidden transition-colors">
+      <Sidebar page={page} setPage={setPage} role={isAdmin ? 'admin' : 'employee'} />
       <main className="flex-1 overflow-y-auto">
-        <div className="p-6 max-w-7xl mx-auto">{renderPage()}</div>
+        <div className="p-6 max-w-7xl mx-auto min-h-full">{renderPage()}</div>
       </main>
       <Toast toasts={toasts} removeToast={removeToast} />
     </div>

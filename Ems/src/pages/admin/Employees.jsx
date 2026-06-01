@@ -1,161 +1,223 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useData } from '../../contexts/DataContext';
-import { Input, Btn, Modal, Avatar, Badge, Select, Textarea, StarRating, C } from '../../components/UI';
+import { Avatar, Badge, Btn, Input, Select, Modal, Textarea, StarRating, EmptyState, PageHeader, C, ConfirmDialog } from '../../components/UI';
 import { formatCurrency } from '../../utils/data';
+import { MdAdd, MdSearch, MdEdit, MdDelete, MdStar } from 'react-icons/md';
 
-const DEPTS = ["Engineering","Marketing","Sales","HR","Finance","Operations","Design"];
-const EMPTY = { name:"", email:"", password:"123", phone:"", department:"Engineering", role:"", salary:"", status:"Active", joiningDate:"" };
+const DEPARTMENTS = ['Engineering','Marketing','Sales','HR','Finance','Operations','Design'];
+const STATUSES    = ['Active','Inactive'];
+const EMPTY = { name:'', email:'', password:'', phone:'', department:'Engineering', role:'', salary:'', status:'Active', joiningDate:'', avatarColor:'#7c3aed' };
+const AVATAR_COLORS = ['#7c3aed','#2563eb','#059669','#d97706','#dc2626','#0891b2','#65a30d','#9333ea','#ea580c','#0284c7','#16a34a','#b45309','#be185d','#6366f1','#f43f5e'];
+
+const STATUS_COLOR = {
+  Active:   'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40',
+  Inactive: 'bg-gray-100 dark:bg-[#1a1f2c] text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-[#252b38]',
+};
 
 export function EmployeesPage({ toast }) {
-  const { employees, addEmployee, updateEmployee, deleteEmployee, ratings, rateEmployee, tasks, attendance } = useData();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [rateModal, setRateModal] = useState(null); // employee obj
-  const [editing, setEditing] = useState(null);
-  const [search, setSearch] = useState("");
+  const { employees, addEmployee, updateEmployee, deleteEmployee, rateEmployee } = useData();
+  const [search, setSearch] = useState('');
+  const [deptFilter, setDeptFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [editEmp, setEditEmp] = useState(null);
+  const [rateEmp, setRateEmp] = useState(null);
+  const [deleteEmp, setDeleteEmp] = useState(null);
   const [form, setForm] = useState(EMPTY);
-  const [rateForm, setRateForm] = useState({ rating: 3, note: "" });
+  const [ratingForm, setRatingForm] = useState({ rating: 3, note: '' });
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }));
-  const filtered = employees.filter(e => e.name.toLowerCase().includes(search.toLowerCase()) || e.email.toLowerCase().includes(search.toLowerCase()));
 
-  function openAdd() { setEditing(null); setForm({ ...EMPTY, joiningDate: new Date().toISOString().split("T")[0] }); setModalOpen(true); }
-  function openEdit(emp) { setEditing(emp); setForm({ ...emp, salary: String(emp.salary) }); setModalOpen(true); }
+  const filtered = useMemo(() => {
+    return employees.filter(e => {
+      const matchSearch = !search || e.name.toLowerCase().includes(search.toLowerCase()) || e.email.toLowerCase().includes(search.toLowerCase());
+      const matchDept = deptFilter === 'All' || e.department === deptFilter;
+      const matchStatus = statusFilter === 'All' || e.status === statusFilter;
+      return matchSearch && matchDept && matchStatus;
+    });
+  }, [employees, search, deptFilter, statusFilter]);
 
-  function handleSubmit(e) {
+  function openAdd() { setForm(EMPTY); setEditEmp('new'); }
+  function openEdit(emp) { setForm({ ...emp, password: '' }); setEditEmp(emp); }
+
+  async function handleSave(e) {
     e.preventDefault();
-    const data = { ...form, salary: Number(form.salary) };
-    if (editing) { updateEmployee({ ...editing, ...data }); toast("Employee updated"); }
-    else { addEmployee(data); toast("Employee added"); }
-    setModalOpen(false);
+    setSaving(true);
+    try {
+      if (editEmp === 'new') {
+        await addEmployee(form);
+        toast('Employee added successfully');
+      } else {
+        await updateEmployee({ ...form, id: editEmp.id });
+        toast('Employee updated');
+      }
+      setEditEmp(null);
+    } catch (err) {
+      toast(err.response?.data?.message || 'Failed to save employee', 'error');
+    } finally { setSaving(false); }
   }
 
-  function openRate(emp) {
-    const r = ratings.find(rt => rt.employeeId === emp.id);
-    setRateForm({ rating: r?.rating ?? 3, note: r?.note ?? "" });
-    setRateModal(emp);
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      await deleteEmployee(deleteEmp.id);
+      toast('Employee removed');
+      setDeleteEmp(null);
+    } catch (err) {
+      toast(err.response?.data?.message || 'Failed to delete', 'error');
+    } finally { setDeleting(false); }
   }
 
-  function handleRate() {
-    rateEmployee(rateModal.id, rateForm.rating, rateForm.note);
-    toast("Rating saved for " + rateModal.name);
-    setRateModal(null);
-  }
-
-  // compute auto rating score
-  function getAutoScore(emp) {
-    const empTasks = tasks.filter(t => t.assignedTo === emp.id);
-    const completed = empTasks.filter(t => t.status === "Completed").length;
-    const taskScore = empTasks.length ? (completed / empTasks.length) * 5 : null;
-    const attRecords = attendance.filter(a => a.employeeId === emp.id);
-    const presentDays = attRecords.filter(a => a.status === "Present" || a.status === "WFH" || a.status === "Half Day").length;
-    const attScore = attRecords.length ? (presentDays / attRecords.length) * 5 : null;
-    if (!taskScore && !attScore) return null;
-    const scores = [taskScore, attScore].filter(s => s !== null);
-    return (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
+  async function handleRate(e) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await rateEmployee(rateEmp.id, ratingForm.rating, ratingForm.note);
+      toast('Rating saved');
+      setRateEmp(null);
+    } catch (err) {
+      toast('Failed to save rating', 'error');
+    } finally { setSaving(false); }
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-black">Employees</h1>
-          <p className={`text-sm mt-0.5 ${C.subtext}`}>{employees.length} total</p>
+    <div className="space-y-4 animate-fade-in-up">
+      <PageHeader title="Employees" subtitle={`${filtered.length} of ${employees.length} employees`}
+        action={<Btn onClick={openAdd}><MdAdd size={15}/> Add Employee</Btn>} />
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2">
+        <div className="relative flex-1 min-w-[200px] max-w-xs">
+          <MdSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search employees…"
+            className={`${C.input} pl-8 h-8 text-sm w-full`} />
         </div>
-        <Btn onClick={openAdd}>+ Add Employee</Btn>
+        <select value={deptFilter} onChange={e => setDeptFilter(e.target.value)}
+          className={`${C.input} h-8 text-sm px-2 pr-7`}>
+          <option value="All">All Departments</option>
+          {DEPARTMENTS.map(d => <option key={d}>{d}</option>)}
+        </select>
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+          className={`${C.input} h-8 text-sm px-2 pr-7`}>
+          <option value="All">All Status</option>
+          {STATUSES.map(s => <option key={s}>{s}</option>)}
+        </select>
       </div>
 
-      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name, email…"
-        className={`${C.card} w-full px-4 py-2.5 text-sm outline-none focus:border-emerald-500 border`} />
-
+      {/* Table */}
       <div className={`${C.card} overflow-hidden`}>
-        <table className="w-full">
-          <thead>
-            <tr className={`border-b ${C.divider}`}>
-              {["Employee","Department","Role","Salary","Rating","Status",""].map(h => (
-                <th key={h} className={`text-left text-xs font-semibold px-4 py-3 ${C.subtext}`}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(emp => {
-              const r = ratings.find(rt => rt.employeeId === emp.id);
-              const auto = getAutoScore(emp);
-              return (
-                <tr key={emp.id} className={`border-b ${C.divider} ${C.rowHover} last:border-0`}>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-100 dark:border-[#1a1f2c] bg-gray-50/50 dark:bg-[#0d1017]">
+                {['Employee','Department','Role','Salary','Joining Date','Status','Rating','Actions'].map(h => (
+                  <th key={h} className="text-left text-[11px] font-semibold px-4 py-3 text-gray-400 dark:text-gray-600 uppercase tracking-wide whitespace-nowrap">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(emp => (
+                <tr key={emp.id} className={`border-b border-gray-50 dark:border-[#1a1f2c] ${C.rowHover} last:border-0`}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
                       <Avatar name={emp.name} color={emp.avatarColor} size="sm" />
                       <div>
-                        <p className="text-sm font-medium">{emp.name}</p>
-                        <p className={`text-xs ${C.muted}`}>{emp.email}</p>
+                        <p className="text-sm font-medium leading-tight">{emp.name}</p>
+                        <p className="text-[11px] text-gray-400 dark:text-gray-600">{emp.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3"><p className={`text-sm ${C.subtext}`}>{emp.department}</p></td>
-                  <td className="px-4 py-3"><p className={`text-sm ${C.subtext}`}>{emp.role}</p></td>
-                  <td className="px-4 py-3"><p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{formatCurrency(emp.salary)}</p></td>
+                  <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{emp.department}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{emp.role}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(emp.salary)}</td>
+                  <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{emp.joiningDate}</td>
+                  <td className="px-4 py-3"><Badge className={STATUS_COLOR[emp.status]}><span className={`w-1.5 h-1.5 rounded-full ${emp.status === 'Active' ? 'bg-emerald-500' : 'bg-gray-400'}`} />{emp.status}</Badge></td>
                   <td className="px-4 py-3">
-                    <div className="flex flex-col gap-0.5">
-                      {r ? <StarRating value={r.rating} readOnly /> : <span className={`text-xs ${C.muted}`}>Not rated</span>}
-                      {auto && <span className={`text-xs ${C.muted}`}>Auto: {auto}★</span>}
-                    </div>
+                    {emp.rating?.rating
+                      ? <StarRating value={emp.rating.rating} readOnly size="sm" />
+                      : <span className="text-[11px] text-gray-300 dark:text-gray-700">Not rated</span>}
                   </td>
                   <td className="px-4 py-3">
-                    <Badge className={emp.status === "Active" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-gray-100 dark:bg-gray-800 text-gray-500"}>
-                      {emp.status}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      <Btn size="sm" variant="outline" onClick={() => openRate(emp)}>Rate</Btn>
-                      <Btn size="sm" variant="ghost" onClick={() => openEdit(emp)}>Edit</Btn>
-                      <Btn size="sm" variant="danger" onClick={() => { deleteEmployee(emp.id); toast("Employee removed", "error"); }}>✕</Btn>
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => { setRateEmp(emp); setRatingForm({ rating: emp.rating?.rating || 3, note: emp.rating?.note || '' }); }}
+                        className={`${C.iconBtn} text-amber-500`} title="Rate"><MdStar size={14}/></button>
+                      <button onClick={() => openEdit(emp)} className={`${C.iconBtn}`} title="Edit"><MdEdit size={14}/></button>
+                      <button onClick={() => setDeleteEmp(emp)} className={`${C.iconBtn} hover:text-red-500 dark:hover:text-red-400`} title="Delete"><MdDelete size={14}/></button>
                     </div>
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {filtered.length === 0 && <EmptyState icon="👥" title="No employees found" description="Try adjusting filters or add a new employee" />}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Edit Employee" : "Add Employee"}>
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-3">
-          <Input label="Full Name" value={form.name} onChange={e => f("name", e.target.value)} required className="col-span-2" />
-          <Input label="Email" type="email" value={form.email} onChange={e => f("email", e.target.value)} required />
-          <Input label="Password" value={form.password} onChange={e => f("password", e.target.value)} required />
-          <Input label="Phone" value={form.phone} onChange={e => f("phone", e.target.value)} />
-          <Select label="Department" value={form.department} onChange={v => f("department", v)} options={DEPTS} />
-          <Input label="Role/Designation" value={form.role} onChange={e => f("role", e.target.value)} required className="col-span-2" />
-          <Input label="Salary (₹)" type="number" value={form.salary} onChange={e => f("salary", e.target.value)} required />
-          <Input label="Joining Date" type="date" value={form.joiningDate} onChange={e => f("joiningDate", e.target.value)} required />
-          <Select label="Status" value={form.status} onChange={v => f("status", v)} options={["Active","Inactive"]} />
-          <div className="col-span-2 flex gap-2 justify-end mt-1">
-            <Btn variant="outline" onClick={() => setModalOpen(false)}>Cancel</Btn>
-            <Btn type="submit">{editing ? "Save Changes" : "Add Employee"}</Btn>
+      {/* Add/Edit Modal */}
+      <Modal open={!!editEmp} onClose={() => setEditEmp(null)}
+        title={editEmp === 'new' ? 'Add Employee' : 'Edit Employee'} maxWidth="max-w-lg">
+        <form onSubmit={handleSave} className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Input label="Full Name" value={form.name} onChange={e => f('name', e.target.value)} required />
+            <Input label="Email" type="email" value={form.email} onChange={e => f('email', e.target.value)} required />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input label={editEmp === 'new' ? 'Password' : 'New Password (optional)'} type="password"
+              value={form.password} onChange={e => f('password', e.target.value)}
+              required={editEmp === 'new'} placeholder={editEmp !== 'new' ? 'Leave blank to keep' : ''} />
+            <Input label="Phone" value={form.phone || ''} onChange={e => f('phone', e.target.value)} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Select label="Department" value={form.department} onChange={v => f('department', v)} options={DEPARTMENTS} />
+            <Input label="Designation / Role" value={form.role} onChange={e => f('role', e.target.value)} required />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input label="Salary (₹)" type="number" value={form.salary} onChange={e => f('salary', e.target.value)} required />
+            <Input label="Joining Date" type="date" value={form.joiningDate} onChange={e => f('joiningDate', e.target.value)} required />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Select label="Status" value={form.status} onChange={v => f('status', v)} options={STATUSES} />
+            <div>
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Avatar Color</p>
+              <div className="flex flex-wrap gap-1.5">
+                {AVATAR_COLORS.map(c => (
+                  <button key={c} type="button" onClick={() => f('avatarColor', c)}
+                    style={{ background: c }}
+                    className={`w-5 h-5 rounded-full transition-transform ${form.avatarColor === c ? 'ring-2 ring-offset-1 ring-offset-white dark:ring-offset-[#111318] ring-gray-400 scale-110' : 'hover:scale-110'}`} />
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2 justify-end pt-2 border-t border-gray-100 dark:border-[#1a1f2c]">
+            <Btn variant="outline" type="button" onClick={() => setEditEmp(null)}>Cancel</Btn>
+            <Btn type="submit" disabled={saving}>{saving ? 'Saving…' : editEmp === 'new' ? 'Add Employee' : 'Save Changes'}</Btn>
           </div>
         </form>
       </Modal>
 
-      <Modal open={!!rateModal} onClose={() => setRateModal(null)} title={`Rate: ${rateModal?.name}`} maxWidth="max-w-sm">
-        {rateModal && (
-          <div className="space-y-4">
-            <div className={`p-3 rounded-lg bg-gray-50 dark:bg-[#161b22] text-xs ${C.subtext} space-y-1`}>
-              <p>Tasks completed: {tasks.filter(t => t.assignedTo === rateModal.id && t.status === "Completed").length} / {tasks.filter(t => t.assignedTo === rateModal.id).length}</p>
-              <p>Attendance days: {attendance.filter(a => a.employeeId === rateModal.id && (a.status === "Present" || a.status === "WFH")).length} present</p>
-            </div>
-            <div>
-              <p className={`text-xs font-medium mb-2 ${C.subtext}`}>Performance Rating</p>
-              <StarRating value={rateForm.rating} onChange={v => setRateForm(p => ({ ...p, rating: v }))} />
-            </div>
-            <Textarea label="Notes (optional)" value={rateForm.note} onChange={e => setRateForm(p => ({ ...p, note: e.target.value }))} placeholder="Add performance notes…" rows={2} />
-            <div className="flex gap-2 justify-end">
-              <Btn variant="outline" onClick={() => setRateModal(null)}>Cancel</Btn>
-              <Btn onClick={handleRate}>Save Rating</Btn>
-            </div>
+      {/* Rate Modal */}
+      <Modal open={!!rateEmp} onClose={() => setRateEmp(null)} title={`Rate ${rateEmp?.name}`} maxWidth="max-w-sm">
+        <form onSubmit={handleRate} className="space-y-4">
+          <div className="flex flex-col items-center gap-3 py-2">
+            <Avatar name={rateEmp?.name || ''} color={rateEmp?.avatarColor} size="lg" />
+            <StarRating value={ratingForm.rating} onChange={v => setRatingForm(p => ({ ...p, rating: v }))} />
+            <p className="text-sm text-gray-500 dark:text-gray-400">{ratingForm.rating} / 5</p>
           </div>
-        )}
+          <Textarea label="Note (optional)" value={ratingForm.note} onChange={e => setRatingForm(p => ({ ...p, note: e.target.value }))} rows={2} placeholder="Performance note…" />
+          <div className="flex gap-2 justify-end pt-1 border-t border-gray-100 dark:border-[#1a1f2c]">
+            <Btn variant="outline" type="button" onClick={() => setRateEmp(null)}>Cancel</Btn>
+            <Btn type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Rating'}</Btn>
+          </div>
+        </form>
       </Modal>
+
+      {/* Delete Confirm */}
+      <ConfirmDialog open={!!deleteEmp} onClose={() => setDeleteEmp(null)}
+        title="Remove Employee"
+        message={`Are you sure you want to remove ${deleteEmp?.name}? This cannot be undone.`}
+        confirmLabel="Remove" confirmVariant="danger"
+        onConfirm={handleDelete} loading={deleting} />
     </div>
   );
 }

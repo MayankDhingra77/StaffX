@@ -1,86 +1,47 @@
-# StaffX - HR Management System
+# StaffX — Full-Stack HRMS
 
-A modern HR management application built with React, Vite, and Tailwind CSS.
+A production-grade Human Resource Management System with React + Node.js + MongoDB.
 
-## Project Structure
+## Quick Start
 
-```
-staffx-app/
-├── src/
-│   ├── components/          # UI components
-│   │   ├── UI.jsx          # Reusable UI elements
-│   │   ├── LoginPage.jsx   # Login page
-│   │   └── Sidebar.jsx     # Navigation sidebar
-│   ├── contexts/           # React contexts
-│   │   ├── AuthContext.jsx      # Authentication
-│   │   └── DataContext.jsx      # Data management
-│   ├── pages/              # Page components
-│   │   ├── admin/          # Admin pages
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Employees.jsx
-│   │   │   ├── Tasks.jsx
-│   │   │   ├── Leaves.jsx
-│   │   │   └── ActivityLogs.jsx
-│   │   └── employee/       # Employee pages
-│   │       ├── Portal.jsx
-│   │       ├── MyTasks.jsx
-│   │       └── MyLeaves.jsx
-│   ├── utils/              # Utility functions
-│   │   └── data.js         # Sample data and helpers
-│   ├── App.jsx             # Main app component
-│   ├── index.jsx           # Entry point
-│   └── index.css           # Global styles
-├── index.html              # HTML template
-├── vite.config.js          # Vite config
-├── tailwind.config.js      # Tailwind config
-├── postcss.config.js       # PostCSS config
-└── package.json            # Dependencies
-
-```
-
-## Installation
-
-1. Install dependencies:
+### 1. Backend
 ```bash
-npm install
+cd backend && npm install && npm run seed && npm run dev
 ```
 
-2. Start development server:
+### 2. Frontend
 ```bash
-npm run dev
-```
-
-3. Open browser at `http://localhost:5173`
-
-## Build for Production
-
-```bash
-npm run build
+npm install && npm run dev
 ```
 
 ## Demo Credentials
+| Role     | Email             | Password |
+|----------|-------------------|----------|
+| Admin    | admin@staffx.io   | admin123 |
+| Employee | aman@staffx.io    | 123      |
 
-**Admin:**
-- Email: admin@staffx.io
-- Password: admin123
+## Environment Variables
 
-**Employee:**
-- Email: arjun@staffx.io
-- Password: 123
+**backend/.env**
+```
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/staffx
+JWT_SECRET=your_secret_here
+CORS_ORIGIN=http://localhost:5173
+```
 
-## Features
+**.env (frontend)**
+```
+VITE_API_URL=http://localhost:5000/api
+```
 
-- Employee management
-- Task assignment and tracking
-- Leave request management
-- Activity logging
-- Dark mode UI
-- Responsive design
-- Local storage persistence
-
-## Technologies Used
-
-- React 18
-- Vite
-- Tailwind CSS
-- React Context API
+## API Routes
+- POST   /api/auth/login
+- GET    /api/employees
+- POST   /api/employees
+- GET    /api/attendance/all
+- POST   /api/attendance/bulk
+- GET    /api/leaves
+- POST   /api/tasks
+- GET    /api/dashboard
+- GET    /api/activities

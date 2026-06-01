@@ -1,17 +1,23 @@
 import { useAuth } from '../../contexts/AuthContext';
 import { useData } from '../../contexts/DataContext';
-import { StarRating, Badge, C } from '../../components/UI';
+import { StarRating, Badge, PageHeader, C } from '../../components/UI';
+
+const STATUS_COLOR = {
+  Completed:    "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40",
+  "In Progress":"bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40",
+  Pending:      "bg-gray-100 dark:bg-[#1a1f2c] text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-[#252b38]",
+  Cancelled:    "bg-red-50 dark:bg-red-950/30 text-red-500 dark:text-red-400 border border-red-100 dark:border-red-900/40",
+};
 
 export function PerformancePage() {
   const { user } = useAuth();
   const { employees, ratings, tasks, attendance, leaves } = useData();
-  const emp = employees.find(e => e.id === user?.employeeId);
+  const emp = employees.find(e => e.id === user?.employeeId || e._id === user?.employeeId);
   if (!emp) return null;
 
   const myRating = ratings.find(r => r.employeeId === emp.id);
   const myTasks = tasks.filter(t => t.assignedTo === emp.id);
   const completed = myTasks.filter(t => t.status === "Completed").length;
-  const inProgress = myTasks.filter(t => t.status === "In Progress").length;
   const taskScore = myTasks.length ? ((completed / myTasks.length) * 5).toFixed(1) : null;
 
   const attRecords = attendance.filter(a => a.employeeId === emp.id);
@@ -20,86 +26,126 @@ export function PerformancePage() {
   const absentDays = attRecords.filter(a => a.status === "Absent").length;
   const attScore = attRecords.length ? (((presentDays + halfDays * 0.5) / attRecords.length) * 5).toFixed(1) : null;
 
-  const myLeaves = leaves.filter(l => l.employeeId === emp.id);
-  const approvedLeaves = myLeaves.filter(l => l.status === "Approved").length;
-
   const overallScore = [taskScore, attScore, myRating?.rating].filter(Boolean);
-  const overall = overallScore.length ? (overallScore.reduce((a, b) => a + Number(b), 0) / overallScore.length).toFixed(1) : null;
+  const overall = overallScore.length
+    ? (overallScore.reduce((a, b) => a + Number(b), 0) / overallScore.length).toFixed(1)
+    : null;
 
   const metrics = [
-    { label: "Tasks Completed", value: `${completed}/${myTasks.length}`, score: taskScore, color: "text-blue-500" },
-    { label: "Attendance Score", value: `${presentDays} present days`, score: attScore, color: "text-emerald-500" },
-    { label: "Admin Rating", value: myRating ? `${myRating.rating}/5` : "Not yet rated", score: myRating?.rating ?? null, color: "text-amber-500" },
+    { label: "Task Completion",  sub: `${completed} of ${myTasks.length} tasks done`,    score: taskScore, color: "bg-blue-500",    textColor: "text-blue-600 dark:text-blue-400" },
+    { label: "Attendance",       sub: `${presentDays} present, ${absentDays} absent`,      score: attScore,  color: "bg-emerald-500", textColor: "text-emerald-600 dark:text-emerald-400" },
+    { label: "Manager Rating",   sub: myRating ? `Rated by admin` : "Not yet rated",        score: myRating?.rating ?? null, color: "bg-amber-500", textColor: "text-amber-600 dark:text-amber-400" },
   ];
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h1 className="text-2xl font-black">My Performance</h1>
-        <p className={`text-sm mt-0.5 ${C.subtext}`}>Your performance overview</p>
-      </div>
+    <div className="space-y-4 max-w-2xl animate-fade-in-up">
+      <PageHeader
+        title="My Performance"
+        subtitle="Your performance overview"
+      />
 
+      {/* Overall score card */}
       {overall && (
-        <div className={`${C.card} p-6 text-center`}>
-          <p className={`text-sm font-semibold ${C.subtext} mb-2`}>Overall Score</p>
-          <p className="text-5xl font-black text-emerald-500">{overall}</p>
-          <p className={`text-sm ${C.muted} mb-3`}>out of 5.0</p>
-          <StarRating value={Math.round(overall)} readOnly />
+        <div className={`${C.card} p-6`}>
+          <div className="flex items-center gap-6">
+            <div className="relative w-20 h-20 shrink-0">
+              <svg viewBox="0 0 36 36" className="w-20 h-20 -rotate-90">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-100 dark:text-[#1a1f2c]" />
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" strokeWidth="2.5"
+                  className="text-emerald-500"
+                  strokeDasharray={`${(Number(overall) / 5) * 100} 100`}
+                  strokeLinecap="round" />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-xl font-bold">{overall}</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-semibold">Overall Score</p>
+              <p className="text-xs text-gray-400 dark:text-gray-600 mt-0.5">Based on tasks, attendance & rating</p>
+              <div className="mt-2">
+                <StarRating value={Math.round(overall)} readOnly />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4">
+      {/* Metrics */}
+      <div className="grid grid-cols-1 gap-3">
         {metrics.map(m => (
-          <div key={m.label} className={`${C.card} p-5`}>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold">{m.label}</h3>
-              {m.score && <span className={`text-lg font-black ${m.color}`}>{m.score}★</span>}
-            </div>
-            <p className={`text-sm ${C.subtext}`}>{m.value}</p>
-            {m.score && (
-              <div className="mt-3 h-2 bg-gray-100 dark:bg-[#21262d] rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${(m.score / 5) * 100}%` }} />
+          <div key={m.label} className={`${C.card} p-4`}>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <h3 className="text-sm font-semibold">{m.label}</h3>
+                <p className="text-xs text-gray-400 dark:text-gray-600 mt-0.5">{m.sub}</p>
               </div>
+              {m.score && (
+                <span className={`text-lg font-bold ${m.textColor}`}>{m.score}★</span>
+              )}
+            </div>
+            {m.score ? (
+              <div className="mt-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[11px] text-gray-400 dark:text-gray-600">Score</span>
+                  <span className="text-[11px] text-gray-400 dark:text-gray-600">{m.score}/5</span>
+                </div>
+                <div className="h-1.5 bg-gray-100 dark:bg-[#1a1f2c] rounded-full overflow-hidden">
+                  <div className={`h-full ${m.color} rounded-full transition-all duration-700`}
+                    style={{ width: `${(m.score / 5) * 100}%` }} />
+                </div>
+              </div>
+            ) : (
+              <div className="h-1.5 bg-gray-100 dark:bg-[#1a1f2c] rounded-full" />
             )}
           </div>
         ))}
       </div>
 
+      {/* Attendance breakdown */}
       <div className={`${C.card} p-5`}>
-        <h3 className="font-bold mb-4">Attendance Breakdown</h3>
-        <div className="grid grid-cols-4 gap-3 text-center">
-          {[["Present", presentDays, "text-emerald-500"], ["Half Day", halfDays, "text-amber-500"], ["Absent", absentDays, "text-red-500"], ["Total", attRecords.length, "text-blue-500"]].map(([l, v, c]) => (
-            <div key={l} className="bg-gray-50 dark:bg-[#161b22] rounded-lg p-3">
-              <p className={`text-xl font-black ${c}`}>{v}</p>
-              <p className={`text-xs mt-0.5 ${C.muted}`}>{l}</p>
+        <h3 className="text-sm font-semibold mb-4">Attendance Breakdown</h3>
+        <div className="grid grid-cols-4 gap-2 text-center">
+          {[["Present", presentDays, "text-emerald-600 dark:text-emerald-400"],
+            ["Half Day", halfDays, "text-amber-600 dark:text-amber-400"],
+            ["Absent", absentDays, "text-red-600 dark:text-red-400"],
+            ["Total", attRecords.length, "text-blue-600 dark:text-blue-400"]].map(([l, v, c]) => (
+            <div key={l} className="bg-gray-50 dark:bg-[#0d1017] border border-gray-100 dark:border-[#1a1f2c] rounded-lg p-3">
+              <p className={`text-xl font-bold ${c}`}>{v}</p>
+              <p className="text-[11px] mt-0.5 text-gray-400 dark:text-gray-600">{l}</p>
             </div>
           ))}
         </div>
       </div>
 
+      {/* Task history */}
       <div className={`${C.card} p-5`}>
-        <h3 className="font-bold mb-4">Task History</h3>
-        {myTasks.length === 0 ? <p className={`text-sm ${C.muted}`}>No tasks assigned yet.</p> : (
-          <div className="space-y-2">
-            {myTasks.map(task => (
-              <div key={task.id} className={`flex items-center justify-between py-2 border-b ${C.divider} last:border-0`}>
-                <div>
-                  <p className="text-sm font-medium">{task.title}</p>
-                  <p className={`text-xs ${C.muted}`}>Due: {task.dueDate}</p>
+        <h3 className="text-sm font-semibold mb-4">Task History</h3>
+        {myTasks.length === 0
+          ? <p className="text-sm text-gray-400 dark:text-gray-600">No tasks assigned yet.</p>
+          : (
+            <div className="space-y-0">
+              {myTasks.map((task, i) => (
+                <div key={task.id}
+                  className={`flex items-center justify-between py-2.5 ${i < myTasks.length - 1 ? "border-b border-gray-100 dark:border-[#1a1f2c]" : ""}`}>
+                  <div>
+                    <p className="text-sm font-medium">{task.title}</p>
+                    <p className="text-[11px] mt-0.5 text-gray-400 dark:text-gray-600">Due: {task.dueDate}</p>
+                  </div>
+                  <Badge className={STATUS_COLOR[task.status] ?? "bg-gray-100 text-gray-500"}>
+                    {task.status}
+                  </Badge>
                 </div>
-                <Badge className={task.status === "Completed" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : task.status === "In Progress" ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"}>
-                  {task.status}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
       </div>
 
+      {/* Admin feedback */}
       {myRating?.note && (
         <div className={`${C.card} p-5`}>
-          <h3 className="font-bold mb-2">Admin Feedback</h3>
-          <p className={`text-sm ${C.subtext}`}>{myRating.note}</p>
+          <h3 className="text-sm font-semibold mb-2">Manager Feedback</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{myRating.note}</p>
         </div>
       )}
     </div>

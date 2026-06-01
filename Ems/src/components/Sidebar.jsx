@@ -29,46 +29,60 @@ export function Sidebar({ page, setPage, role }) {
   const nav = role === "admin" ? NAV_ADMIN : NAV_EMPLOYEE;
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-[#0d1117] border-r border-gray-200 dark:border-[#21262d] w-60 shrink-0">
-      <div className="px-5 py-5 border-b border-gray-200 dark:border-[#21262d]">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center shrink-0">
-            <span className="text-white font-black text-sm">SX</span>
+    <div className="flex flex-col h-full bg-white dark:bg-[#0d1017] border-r border-gray-200 dark:border-[#1e2432] w-[220px] shrink-0">
+      {/* Logo */}
+      <div className="px-4 py-4 border-b border-gray-100 dark:border-[#1a1f2c]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-900/30">
+            <span className="text-white font-bold text-xs tracking-wider">SX</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-black text-base tracking-tight text-gray-900 dark:text-white">StaffX</p>
-            <p className="text-gray-400 dark:text-gray-600 text-xs capitalize">{role} Panel</p>
+            <p className="font-semibold text-sm text-gray-900 dark:text-white">StaffX</p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-600 capitalize tracking-wide">{role} panel</p>
           </div>
-          <button onClick={toggle} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[#21262d] text-gray-400 transition-colors" title="Toggle theme">
-            {dark ? <MdWbSunny size={16} /> : <MdNightlight size={16} />}
+          <button onClick={toggle}
+            className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-[#1a1f2c] text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors"
+            title="Toggle theme">
+            {dark ? <MdWbSunny size={14} /> : <MdNightlight size={14} />}
           </button>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {nav.map(({ key, label, Icon }) => (
-          <button key={key} onClick={() => setPage(key)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left
-              ${page === key
-                ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40"
-                : "text-gray-500 dark:text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#161b22]"}`}>
-            <Icon size={17} className="shrink-0" />
-            {label}
-          </button>
-        ))}
+      {/* Navigation */}
+      <nav className="flex-1 px-2.5 py-3 space-y-0.5 overflow-y-auto">
+        <p className="px-2 pb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-700">
+          {role === "admin" ? "Management" : "Personal"}
+        </p>
+        {nav.map(({ key, label, Icon }) => {
+          const isActive = page === key;
+          return (
+            <button key={key} onClick={() => setPage(key)}
+              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-all text-left group
+                ${isActive
+                  ? "bg-emerald-600 text-white shadow-sm shadow-emerald-900/30"
+                  : "text-gray-500 dark:text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#161a22]"
+                }`}>
+              <Icon size={15} className={`shrink-0 transition-colors ${isActive ? "text-white/90" : "text-gray-400 dark:text-gray-600 group-hover:text-gray-600 dark:group-hover:text-gray-400"}`} />
+              {label}
+            </button>
+          );
+        })}
       </nav>
 
-      <div className="px-3 py-4 border-t border-gray-200 dark:border-[#21262d]">
-        <div className="flex items-center gap-3 px-3 py-2 mb-2">
+      {/* User footer */}
+      <div className="px-2.5 py-3 border-t border-gray-100 dark:border-[#1a1f2c] space-y-1">
+        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg">
           <Avatar name={user?.name ?? "?"} color="#059669" size="sm" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">{user?.name}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-600 truncate capitalize">{user?.role}</p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-600 truncate capitalize">{user?.role}</p>
           </div>
         </div>
-        <Btn onClick={logout} variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600 dark:hover:text-red-400">
-          <MdLogout size={15} /> Sign Out
-        </Btn>
+        <button onClick={logout}
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium text-gray-400 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors">
+          <MdLogout size={13} />
+          Sign out
+        </button>
       </div>
     </div>
   );
